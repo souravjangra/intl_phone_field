@@ -105,6 +105,8 @@ class IntlPhoneField extends StatefulWidget {
   /// [Decoration.enabled] property.
   final bool enabled;
 
+  final bool flagsEnabled;
+
   /// The appearance of the keyboard.
   ///
   /// This setting is only honored on iOS devices.
@@ -254,6 +256,7 @@ class IntlPhoneField extends StatefulWidget {
     this.cursorWidth = 2.0,
     this.showCursor = true,
     this.pickerDialogStyle,
+    this.flagsEnabled = true
   }) : super(key: key);
 
   @override
@@ -435,7 +438,7 @@ class _IntlPhoneFieldState extends State<IntlPhoneField> {
             ],
           ),
         ),
-        onTap: widget.enabled ? _changeCountry : null,
+        onTap: widget.enabled && widget.flagsEnabled ? _changeCountry : null,
       ),
     );
   }
