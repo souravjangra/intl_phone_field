@@ -434,6 +434,7 @@ class _IntlPhoneFieldState extends State<IntlPhoneField> {
                   widget.showDropdownIcon &&
                   widget.dropdownIconPosition == IconPosition.trailing) ...[
                 widget.dropdownIcon,
+                SizedBox(width: widget.showDropdownIcon ? 0 : 4)
               ],
             ],
           ),
