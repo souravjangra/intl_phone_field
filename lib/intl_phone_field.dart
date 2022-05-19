@@ -5,9 +5,10 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:intl_phone_field/country_picker_dialog.dart';
+import 'package:just_play/constants/colors.dart';
 
-import './countries.dart';
-import './phone_number.dart';
+import 'countries.dart';
+import 'phone_number.dart';
 
 class IntlPhoneField extends StatefulWidget {
   /// Whether to hide the text being edited (e.g., for passwords).
@@ -225,7 +226,7 @@ class IntlPhoneField extends StatefulWidget {
     this.focusNode,
     this.decoration = const InputDecoration(),
     this.style,
-    this.dropdownTextStyle,
+    this.dropdownTextStyle = const TextStyle(color: AppColors.primary),
     this.onSubmitted,
     this.validator,
     this.onChanged,
@@ -240,7 +241,7 @@ class IntlPhoneField extends StatefulWidget {
     @Deprecated('Use searchFieldInputDecoration of PickerDialogStyle instead')
         this.searchText = 'Search country',
     this.dropdownIconPosition = IconPosition.leading,
-    this.dropdownIcon = const Icon(Icons.arrow_drop_down),
+    this.dropdownIcon = const Icon(Icons.keyboard_arrow_down, color: AppColors.primary,),
     this.autofocus = false,
     this.textInputAction,
     this.autovalidateMode = AutovalidateMode.onUserInteraction,
@@ -326,64 +327,89 @@ class _IntlPhoneFieldState extends State<IntlPhoneField> {
 
   @override
   Widget build(BuildContext context) {
-    return TextFormField(
-      initialValue: (widget.controller == null) ? number : null,
-      readOnly: widget.readOnly,
-      obscureText: widget.obscureText,
-      textAlign: widget.textAlign,
-      textAlignVertical: widget.textAlignVertical,
-      cursorColor: widget.cursorColor,
-      onTap: widget.onTap,
-      controller: widget.controller,
-      focusNode: widget.focusNode,
-      cursorHeight: widget.cursorHeight,
-      cursorRadius: widget.cursorRadius,
-      cursorWidth: widget.cursorWidth,
-      showCursor: widget.showCursor,
-      onFieldSubmitted: widget.onSubmitted,
-      decoration: widget.decoration.copyWith(
-        prefixIcon: _buildFlagsButton(),
-        counterText: !widget.enabled ? '' : null,
-      ),
-      style: widget.style,
-      onSaved: (value) {
-        widget.onSaved?.call(
-          PhoneNumber(
-            countryISOCode: _selectedCountry.code,
-            countryCode: '+${_selectedCountry.dialCode}',
-            number: value!,
+    return Container(
+      height: 48,
+      decoration: BoxDecoration(
+          border: Border.all(
+            color: AppColors.borderColor,
           ),
-        );
-      },
-      onChanged: (value) async {
-        hasChanged = true;
-        final phoneNumber = PhoneNumber(
-          countryISOCode: _selectedCountry.code,
-          countryCode: '+${_selectedCountry.dialCode}',
-          number: value,
-        );
-        // validate here to take care of async validation
-        var msg;
-        if (widget.autovalidateMode != AutovalidateMode.disabled) {
-          msg = widget.disableLengthCheck ||
-                  value.length >= _selectedCountry.minLength &&
-                      value.length <= _selectedCountry.maxLength
-              ? null
-              : (widget.invalidNumberMessage ?? 'Invalid Mobile Number');
-          msg ??= await widget.validator?.call(phoneNumber.completeNumber);
-          setState(() => validationMessage = msg);
-        }
-        widget.onChanged?.call(phoneNumber);
-      },
-      validator: (value) => validationMessage,
-      maxLength: widget.disableLengthCheck ? null : _selectedCountry.maxLength,
-      keyboardType: widget.keyboardType,
-      inputFormatters: widget.inputFormatters,
-      enabled: widget.enabled,
-      keyboardAppearance: widget.keyboardAppearance,
-      autofocus: widget.autofocus,
-      textInputAction: widget.textInputAction,
-      autovalidateMode: widget.autovalidateMode,
+          borderRadius: BorderRadius.all(Radius.circular(8))
+      ),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4),
+        child: Row(children: [
+          SizedBox(height: 60,
+          child: _buildFlagsButton(),),
+          const SizedBox(width: 8,),
+          Flexible(
+            child: TextFormField(
+              initialValue: (widget.controller == null) ? number : null,
+              readOnly: widget.readOnly,
+              obscureText: widget.obscureText,
+              textAlign: widget.textAlign,
+              textAlignVertical: widget.textAlignVertical,
+              cursorColor: widget.cursorColor,
+              onTap: widget.onTap,
+              controller: widget.controller,
+              focusNode: widget.focusNode,
+              cursorHeight: widget.cursorHeight,
+              cursorRadius: widget.cursorRadius,
+              cursorWidth: widget.cursorWidth,
+              showCursor: widget.showCursor,
+              onFieldSubmitted: widget.onSubmitted,
+
+              decoration: widget.decoration.copyWith(
+                isCollapsed: true,
+                border: InputBorder.none,
+
+                //prefixIcon: _buildFlagsButton(),
+                //counterText: !widget.enabled ? '' : null,
+                counterText: ''
+              ),
+              style: widget.style,
+              onSaved: (value) {
+                widget.onSaved?.call(
+                  PhoneNumber(
+                    countryISOCode: _selectedCountry.code,
+                    countryCode: '+${_selectedCountry.dialCode}',
+                    number: value!,
+                  ),
+                );
+              },
+              onChanged: (value) async {
+                hasChanged = true;
+                final phoneNumber = PhoneNumber(
+                  countryISOCode: _selectedCountry.code,
+                  countryCode: '+${_selectedCountry.dialCode}',
+                  number: value,
+                );
+                // validate here to take care of async validation
+                var msg;
+                if (widget.autovalidateMode != AutovalidateMode.disabled) {
+                  msg = widget.disableLengthCheck ||
+                          value.length >= _selectedCountry.minLength &&
+                              value.length <= _selectedCountry.maxLength
+                      ? null
+                      : (widget.invalidNumberMessage ?? 'Invalid Mobile Number');
+                  msg ??= await widget.validator?.call(phoneNumber.completeNumber);
+                  setState(() => validationMessage = msg);
+                }
+                widget.onChanged?.call(phoneNumber);
+              },
+              validator: (value) => validationMessage,
+              maxLength:
+                  widget.disableLengthCheck ? null : _selectedCountry.maxLength,
+              keyboardType: widget.keyboardType,
+              inputFormatters: widget.inputFormatters,
+              enabled: widget.enabled,
+              keyboardAppearance: widget.keyboardAppearance,
+              autofocus: widget.autofocus,
+              textInputAction: widget.textInputAction,
+              autovalidateMode: widget.autovalidateMode,
+            ),
+          ),
+        ]),
+      ),
     );
   }
 
@@ -398,12 +424,7 @@ class _IntlPhoneFieldState extends State<IntlPhoneField> {
             mainAxisSize: MainAxisSize.min,
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
-              if (widget.enabled &&
-                  widget.showDropdownIcon &&
-                  widget.dropdownIconPosition == IconPosition.leading) ...[
-                widget.dropdownIcon,
-                SizedBox(width: 4),
-              ],
+
               if (widget.showCountryFlag) ...[
                 Image.asset(
                   'assets/flags/${_selectedCountry.code.toLowerCase()}.png',
@@ -418,6 +439,12 @@ class _IntlPhoneFieldState extends State<IntlPhoneField> {
                   style: widget.dropdownTextStyle,
                 ),
               ),
+              if (widget.enabled &&
+                  widget.showDropdownIcon &&
+                  widget.dropdownIconPosition == IconPosition.leading) ...[
+                widget.dropdownIcon,
+                SizedBox(width: 4),
+              ],
               if (widget.enabled &&
                   widget.showDropdownIcon &&
                   widget.dropdownIconPosition == IconPosition.trailing) ...[
