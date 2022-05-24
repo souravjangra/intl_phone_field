@@ -342,7 +342,10 @@ class _IntlPhoneFieldState extends State<IntlPhoneField> {
       showCursor: widget.showCursor,
       onFieldSubmitted: widget.onSubmitted,
       decoration: widget.decoration.copyWith(
-        prefixIcon: _buildFlagsButton(),
+        prefixIcon: Padding(
+          padding: const EdgeInsets.only(left: 16.0),
+          child: _buildFlagsButton(),
+        ),
         counterText: !widget.enabled ? '' : null,
       ),
       style: widget.style,
