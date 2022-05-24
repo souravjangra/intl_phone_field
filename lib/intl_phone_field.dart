@@ -5,9 +5,10 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:intl_phone_field/country_picker_dialog.dart';
+import 'package:just_play/constants/colors.dart';
 
-import './countries.dart';
-import './phone_number.dart';
+import 'countries.dart';
+import 'phone_number.dart';
 
 class IntlPhoneField extends StatefulWidget {
   /// Whether to hide the text being edited (e.g., for passwords).
@@ -225,7 +226,7 @@ class IntlPhoneField extends StatefulWidget {
     this.focusNode,
     this.decoration = const InputDecoration(),
     this.style,
-    this.dropdownTextStyle,
+    this.dropdownTextStyle = const TextStyle(color: AppColors.primary),
     this.onSubmitted,
     this.validator,
     this.onChanged,
@@ -240,7 +241,7 @@ class IntlPhoneField extends StatefulWidget {
     @Deprecated('Use searchFieldInputDecoration of PickerDialogStyle instead')
         this.searchText = 'Search country',
     this.dropdownIconPosition = IconPosition.leading,
-    this.dropdownIcon = const Icon(Icons.arrow_drop_down),
+    this.dropdownIcon = const Icon(Icons.keyboard_arrow_down,size: 32),
     this.autofocus = false,
     this.textInputAction,
     this.autovalidateMode = AutovalidateMode.onUserInteraction,
@@ -321,7 +322,7 @@ class _IntlPhoneFieldState extends State<IntlPhoneField> {
         ),
       ),
     );
-    if (this.mounted) setState(() {});
+    if (mounted) setState(() {});
   }
 
   @override
@@ -379,7 +380,8 @@ class _IntlPhoneFieldState extends State<IntlPhoneField> {
         widget.onChanged?.call(phoneNumber);
       },
       validator: (value) => validationMessage,
-      maxLength: widget.disableLengthCheck ? null : _selectedCountry.maxLength,
+      maxLength:
+          widget.disableLengthCheck ? null : _selectedCountry.maxLength,
       keyboardType: widget.keyboardType,
       inputFormatters: widget.inputFormatters,
       enabled: widget.enabled,
@@ -401,12 +403,7 @@ class _IntlPhoneFieldState extends State<IntlPhoneField> {
             mainAxisSize: MainAxisSize.min,
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
-              if (widget.enabled &&
-                  widget.showDropdownIcon &&
-                  widget.dropdownIconPosition == IconPosition.leading) ...[
-                widget.dropdownIcon,
-                SizedBox(width: 4),
-              ],
+
               if (widget.showCountryFlag) ...[
                 Image.asset(
                   'assets/flags/${_selectedCountry.code.toLowerCase()}.png',
@@ -414,7 +411,7 @@ class _IntlPhoneFieldState extends State<IntlPhoneField> {
                   width: 32,
                   alignment: Alignment.centerLeft,
                 ),
-                SizedBox(width: 8),
+                const SizedBox(width: 8),
               ],
               FittedBox(
                 child: Text(
@@ -422,6 +419,12 @@ class _IntlPhoneFieldState extends State<IntlPhoneField> {
                   style: widget.dropdownTextStyle,
                 ),
               ),
+              if (widget.enabled &&
+                  widget.showDropdownIcon &&
+                  widget.dropdownIconPosition == IconPosition.leading) ...[
+                widget.dropdownIcon,
+                const SizedBox(width: 4),
+              ],
               if (widget.enabled &&
                   widget.showDropdownIcon &&
                   widget.dropdownIconPosition == IconPosition.trailing) ...[
