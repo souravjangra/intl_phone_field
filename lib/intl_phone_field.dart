@@ -164,7 +164,7 @@ class IntlPhoneField extends StatefulWidget {
   /// Icon of the drop down button.
   ///
   /// Default is [Icon(Icons.arrow_drop_down)]
-  final Icon dropdownIcon;
+  final Widget dropdownIcon;
 
   /// Whether this text field should focus itself if nothing else is already focused.
   final bool autofocus;
@@ -412,6 +412,7 @@ class _IntlPhoneFieldState extends State<IntlPhoneField> {
                   'assets/flags/${_selectedCountry.code.toLowerCase()}.png',
                   package: 'intl_phone_field',
                   width: 32,
+                  alignment: Alignment.centerLeft,
                 ),
                 SizedBox(width: 8),
               ],
