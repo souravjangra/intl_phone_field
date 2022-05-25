@@ -1,12 +1,9 @@
 library intl_phone_field;
 
 import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:intl_phone_field/country_picker_dialog.dart';
-import 'package:just_play/constants/colors.dart';
-
 import 'countries.dart';
 import 'phone_number.dart';
 
@@ -212,6 +209,8 @@ class IntlPhoneField extends StatefulWidget {
   /// & pick dialog
   final PickerDialogStyle? pickerDialogStyle;
 
+  final SizedBox? flagBox;
+
   IntlPhoneField({
     Key? key,
     this.initialCountryCode,
@@ -226,7 +225,9 @@ class IntlPhoneField extends StatefulWidget {
     this.focusNode,
     this.decoration = const InputDecoration(),
     this.style,
-    this.dropdownTextStyle = const TextStyle(color: AppColors.primary),
+    this.dropdownTextStyle = const TextStyle(
+      color: Color(0xFF2F7BD6),
+    ),
     this.onSubmitted,
     this.validator,
     this.onChanged,
@@ -241,7 +242,7 @@ class IntlPhoneField extends StatefulWidget {
     @Deprecated('Use searchFieldInputDecoration of PickerDialogStyle instead')
         this.searchText = 'Search country',
     this.dropdownIconPosition = IconPosition.leading,
-    this.dropdownIcon = const Icon(Icons.keyboard_arrow_down,size: 32),
+    this.dropdownIcon = const Icon(Icons.keyboard_arrow_down, size: 32),
     this.autofocus = false,
     this.textInputAction,
     this.autovalidateMode = AutovalidateMode.onUserInteraction,
@@ -255,6 +256,7 @@ class IntlPhoneField extends StatefulWidget {
     this.cursorWidth = 2.0,
     this.showCursor = true,
     this.pickerDialogStyle,
+    this.flagBox,
   }) : super(key: key);
 
   @override
@@ -267,7 +269,6 @@ class _IntlPhoneFieldState extends State<IntlPhoneField> {
   late List<Country> filteredCountries;
   late String number;
   bool hasChanged = false;
-
   String? validationMessage;
 
   @override
@@ -380,8 +381,7 @@ class _IntlPhoneFieldState extends State<IntlPhoneField> {
         widget.onChanged?.call(phoneNumber);
       },
       validator: (value) => validationMessage,
-      maxLength:
-          widget.disableLengthCheck ? null : _selectedCountry.maxLength,
+      maxLength: widget.disableLengthCheck ? null : _selectedCountry.maxLength,
       keyboardType: widget.keyboardType,
       inputFormatters: widget.inputFormatters,
       enabled: widget.enabled,
@@ -400,15 +400,15 @@ class _IntlPhoneFieldState extends State<IntlPhoneField> {
         child: Padding(
           padding: widget.flagsButtonPadding,
           child: Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
             mainAxisSize: MainAxisSize.min,
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
-
               if (widget.showCountryFlag) ...[
                 Image.asset(
                   'assets/flags/${_selectedCountry.code.toLowerCase()}.png',
                   package: 'intl_phone_field',
-                  width: 32,
+                  width: widget.flagBox?.width ?? 32,
                   alignment: Alignment.centerLeft,
                 ),
                 const SizedBox(width: 8),
@@ -423,15 +423,14 @@ class _IntlPhoneFieldState extends State<IntlPhoneField> {
                   widget.showDropdownIcon &&
                   widget.dropdownIconPosition == IconPosition.leading) ...[
                 widget.dropdownIcon,
-                const SizedBox(width: 4),
+                const SizedBox(width: 6),
               ],
               if (widget.enabled &&
                   widget.showDropdownIcon &&
                   widget.dropdownIconPosition == IconPosition.trailing) ...[
-                SizedBox(width: 4),
+                const SizedBox(width: 4),
                 widget.dropdownIcon,
               ],
-              SizedBox(width: 8),
             ],
           ),
         ),
